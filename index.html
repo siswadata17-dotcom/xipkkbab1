@@ -1,1 +1,480 @@
-hello word
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soal Evaluasi PKK DKV BAB 1</title>
+<style>
+  * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  }
+  h1 {
+    text-align: center;
+    color: #4a3b8f;
+    margin-bottom: 5px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .timer {
+    position: sticky;
+    top: 10px;
+    background: #ff4757;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    z-index: 100;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  .btn {
+    background: #667eea;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  .btn:hover {
+    background: #5568d3;
+  }
+  .btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+  }
+  .question {
+    background: #f8f9ff;
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+  .question p {
+    font-weight: 600;
+    margin-top: 0;
+    color: #333;
+  }
+  .option {
+    display: block;
+    margin: 8px 0;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .option:hover {
+    background: #e8ecff;
+  }
+  .option input {
+    margin-right: 10px;
+  }
+  .result {
+    text-align: center;
+    padding: 30px;
+    background: #e8f5e9;
+    border-radius: 10px;
+    border: 2px solid #4caf50;
+  }
+  .result h2 {
+    color: #2e7d32;
+    margin-top: 0;
+  }
+  .score {
+    font-size: 48px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin: 15px 0;
+  }
+  .info-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #856404;
+  }
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 60px;
+    color: rgba(102, 126, 234, 0.05);
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1;
+    white-space: nowrap;
+  }
+  #resetBtn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: transparent;
+    color: transparent;
+    border: none;
+    font-size: 10px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+  }
+  .modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body oncontextmenu="return false;" onkeydown="return blockKeys(event);">
+
+<div class="watermark">UJIAN - DILARANG SCREENSHOT</div>
+
+<div class="container">
+  <h1>📝 Evaluasi PKK DKV BAB 1</h1>
+  <p class="subtitle">Kewirausahaan Produk Teknik Komputer dan Informatika</p>
+
+  <div class="info-box">
+    ⏰ Waktu pengerjaan: <strong>30 menit</strong>. Soal tidak dapat dikumpulkan sebelum waktu habis.
+  </div>
+
+  <div class="timer" id="timer">Waktu Tersisa: 30:00</div>
+
+  <!-- FORM IDENTITAS -->
+  <div id="identityForm">
+    <div class="form-group">
+      <label>Nama Lengkap:</label>
+      <input type="text" id="nama" placeholder="Masukkan nama lengkap">
+    </div>
+    <div class="form-group">
+      <label>Nomor Absen:</label>
+      <input type="text" id="nomor" placeholder="Masukkan nomor absen">
+    </div>
+    <div class="form-group">
+      <label>Kelas:</label>
+      <input type="text" id="kelas" placeholder="Contoh: XI DKV 1">
+    </div>
+    <button class="btn" onclick="mulaiUjian()">Mulai Ujian</button>
+  </div>
+
+  <!-- AREA SOAL -->
+  <div id="quizArea" style="display:none;"></div>
+
+  <!-- HASIL -->
+  <div id="resultArea" style="display:none;"></div>
+</div>
+
+<!-- MODAL RESET GURU -->
+<div class="modal" id="resetModal">
+  <div class="modal-content">
+    <h3>🔐 Reset Ujian (Guru)</h3>
+    <input type="password" id="passwordGuru" placeholder="Masukkan password guru">
+    <button class="btn" onclick="konfirmasiReset()">Reset</button>
+    <button class="btn" style="background:#aaa;" onclick="tutupModal()">Batal</button>
+  </div>
+</div>
+
+<!-- TOMBOL RESET TERSEMBUNYI -->
+<button id="resetBtn" onclick="bukaModalReset()"></button>
+
+<script>
+// ============ DATA SOAL ============
+const soal = [
+  {q:"Seorang wirausahawan komputer dan informatika didefinisikan sebagai seseorang yang memiliki usaha sendiri dalam bidang barang atau jasa, khususnya di dunia...", o:["Multimedia","Pertanian","Pertambangan","Perbankan","Kesehatan"], a:0},
+  {q:"Faktor yang memengaruhi semangat kerja seorang wirausahawan, di mana terbukanya sebuah kesempatan dapat meningkatkan kinerjanya, disebut...", o:["Minat","Peluang","Relasi","Modal","Ambisi"], a:1},
+  {q:"Salah satu faktor penyebab keberhasilan seorang wirausaha yang berkaitan dengan kemampuan untuk memimpin dan mengambil keputusan adalah...", o:["Cepat putus asa","Kurang teliti","Memiliki kemampuan memimpin","Kurang inisiatif","Pelayanan kurang baik"], a:2},
+  {q:"Faktor penyebab kegagalan wirausaha yang disebabkan oleh minimnya kemampuan dan pengetahuan dalam mengelola usaha disebut...", o:["Sikap setengah hati","Kurang berpengalaman dalam kemampuan teknik","Gagal dalam perencanaan","Tidak kompeten dalam manajerial","Lokasi yang kurang memadai"], a:3},
+  {q:"Istilah yang muncul sebagai padanan 'entrepreneur' dan sejak awal lebih menekankan pada aspek kemandirian (swasta) adalah...", o:["Pedagang","Pengusaha","Investor","Manajer","Wiraswasta"], a:4},
+  {q:"Kecerdasan yang berperan untuk hidup, menghadapi tantangan hidup, dan kehidupan, sehingga membentuk individu yang bermental baja, disebut kecerdasan...", o:["Adversitas (AQ)","Finansial (FQ)","Emosional (EQ)","Intelektual (IQ)","Spiritual (SQ)"], a:0},
+  {q:"Karakteristik wirausaha yang memiliki dorongan kuat, energik, memiliki ketekunan, dan berorientasi pada keuntungan disebut...", o:["Leadership","Profit oriented","Risk and challenge","Orisinal","Fleksibel"], a:1},
+  {q:"Risiko yang tidak dapat diukur secara matematis dan sering dihadapi oleh pengusaha disebut risiko...", o:["Biasa","Murni","Ambigu","Sistematis","Terhindarkan"], a:2},
+  {q:"Strategi awal dalam menjadi wirausaha dengan mencari pangsa pasar khusus yang kebutuhan utamanya belum terpenuhi oleh kompetitor disebut...", o:["Ekspansi pasar","Diversifikasi produk","Monopoli pasar","Mencari pasar khusus (niche market)","Penetrasi harga"], a:3},
+  {q:"Nilai etika yang harus dipegang oleh seorang wirausaha karena dapat menimbulkan respek dari konsumen dan membuat usaha bertahan lama adalah...", o:["Ambisius","Kompetitif","Agresif","Perfeksionis","Jujur"], a:4},
+  {q:"Seorang wirausaha jasa desain grafis selalu memperhatikan faktor-faktor kritis secara rinci dan tidak pernah mengabaikan hal-hal kecil. Karakteristik ini sesuai dengan identifikasi keberhasilan wirausaha yaitu...", o:["Details","Dream","Doers","Destiny","Dollars"], a:0},
+  {q:"Andi tidak mau menunda-nunda kesempatan baik dalam bisnisnya. Setiap kali membuat keputusan, ia langsung menindaklanjutinya secepat mungkin. Sikap Andi mencerminkan karakteristik...", o:["Dedication","Doers","Devotion","Distribute","Determination"], a:1},
+  {q:"Seorang wirausaha yang mencintai pekerjaan bisnisnya dan produk yang dihasilkannya, sehingga hal tersebut mendorong keberhasilan yang sangat efektif untuk menjual produknya, memiliki karakteristik...", o:["Dream","Details","Devotion","Destiny","Dollars"], a:2},
+  {q:"Budi menganggap uang bukan sebagai motivasi utama, melainkan sebagai ukuran kesuksesan bisnisnya. Ia berasumsi bahwa laba dan bonus pantas didapatkannya apabila berhasil. Karakteristik ini disebut...", o:["Dream","Doers","Determination","Dollars","Distribute"], a:3},
+  {q:"Seorang wirausaha bersedia mendistribusikan kepemilikan bisnisnya pada orang-orang kepercayaannya, yaitu orang-orang kritis dan inovatif. Hal ini merupakan karakteristik...", o:["Destiny","Details","Devotion","Dedication","Distribute"], a:4},
+  {q:"Proses membuat sesuatu dari tidak ada menjadi ada merupakan tipe kreativitas...", o:["Menciptakan","Memodifikasi","Mengombinasikan","Mengadaptasi","Mengimpor"], a:0},
+  {q:"Aktivitas mengombinasikan dua hal atau lebih yang sebelumnya tidak saling berhubungan merupakan tipe kreativitas...", o:["Menciptakan","Mengombinasikan","Memodifikasi","Menggandakan","Meniru"], a:1},
+  {q:"Hambatan kreativitas wirausaha yang disebabkan oleh adanya ketentuan atau karakteristik tertentu untuk suatu hal, sehingga membatasi cara pandang dan persepsi terhadap kemungkinan lain, disebut...", o:["Probabilitas","Pesimisme","Stereotip","Inkubasi","Determinasi"], a:2},
+  {q:"Masa di mana ide bisnis yang cocok dibiarkan mengendap dahulu agar makin matang sebelum dibuat rencana, disebut masa...", o:["Eksekusi","Evaluasi","Ekspansi","Inkubasi","Eliminasi"], a:3},
+  {q:"Unsur penunjang bekerja efektif dan efisien yang berarti hemat dalam menggunakan waktu, tenaga, dan biaya adalah...", o:["Ketepatan","Kecermatan","Kecepatan","Keselamatan","Penghematan"], a:4},
+  {q:"Jika seorang wirausaha produk multimedia mengalami kegagalan karena aliran kas yang tidak teratur dan penghamburan dana operasional, faktor penyebab kegagalan yang paling dominan adalah...", o:["Kurang mampu dalam mengendalikan keuangan","Kurangnya pengawasan peralatan","Tidak kompeten dalam manajerial","Gagal dalam sebuah perencanaan","Lokasi yang kurang memadai"], a:0},
+  {q:"Seorang wirausaha muda merasa usahanya stagnan karena ia hanya menunggu konsumen datang tanpa mencari tahu tren terbaru. Sikap yang harus diubah agar usahanya maju adalah...", o:["Menghindari kata-kata yang mematahkan semangat","Peka terhadap tren terbaru dan berani memulainya","Mengeksplorasi kelemahan kompetitor","Mencari pasar khusus yang belum tergarap","Segera mengimplementasi ide menjadi tindakan"], a:1},
+  {q:"Perbedaan mendasar antara pendidikan wiraswasta dan wirausaha menurut teks sumber adalah...", o:["Wiraswasta menekankan FQ, sedangkan wirausaha menekankan EQ","Wiraswasta hanya untuk survival, sedangkan wirausaha tidak","Wiraswasta lebih menekankan EQ dan AQ, sedangkan wirausaha menekankan FQ","Wirausaha tidak memerlukan kecerdasan finansial","Keduanya memiliki persepsi yang sama persis"], a:2},
+  {q:"Jenis risiko yang paling sering dihadapi pengusaha saat mengeluarkan produk baru yang belum ada di pasaran adalah...", o:["Risiko biasa","Risiko terukur","Risiko matematis","Ketidakpastian murni","Risiko terhindarkan"], a:3},
+  {q:"Untuk mengidentifikasi kekurangan dan kelemahan kompetitor, langkah strategis yang paling tepat dilakukan oleh wirausaha adalah...", o:["Meniru seluruh produk kompetitor","Menurunkan harga secara drastis","Mengabaikan keluhan konsumen","Menutup akses informasi dari pasar","Mengeksplorasi kelemahan kompetitor dengan mendengarkan komplain konsumen"], a:4},
+  {q:"Sikap wirausaha yang selalu berani mengambil risiko dan tidak cepat puas, sehingga terus menciptakan peluang-peluang baru, mencerminkan prinsip...", o:["Berani mengambil risiko","Bersikap fleksibel","Mengenal bisnis","Mengakui kesalahan","Bersikap jujur"], a:0},
+  {q:"Seorang wirausaha desain web mengakui bahwa desain yang ia buat memiliki kesalahan navigasi dan segera memperbaikinya. Sikap ini menunjukkan karakteristik wirausaha tangguh, yaitu...", o:["Optimis dengan masa depan","Mengakui jika memiliki kesalahan","Memiliki gairah dalam wirausaha","Bersikap fleksibel","Berusaha mengenal bisnis"], a:1},
+  {q:"Sifat pesimis pada seorang wirausaha sangat berbahaya karena...", o:["Membuatnya terlalu berani mengambil risiko","Membuatnya terlalu cepat dalam mengambil keputusan","Berkaitan erat dengan fokus seseorang akan kegagalan, sehingga membuyarkan rencana","Membuatnya terlalu fokus pada keuntungan finansial","Membuatnya terlalu bergantung pada orang lain"], a:2},
+  {q:"Kreativitas para calon wirausaha dapat ditingkatkan dengan cara pandang yang statis terhadap lingkungan yang telah ada untuk mengenali hubungan yang baru dan berbeda. Hal ini disebut...", o:["Menggunakan akal","Menghapus perasaan ragu-ragu","Mengembangkan perspektif fungsional","Mengenali lingkungan","Menciptakan peluang"], a:3},
+  {q:"Ciri-ciri orang yang memiliki motif berprestasi tinggi dalam wirausaha, kecuali...", o:["Berani menghadapi risiko dengan penuh perhitungan","Menyukai tantangan dan melihat tantangan secara seimbang","Ingin mengatasi sendiri kesulitan dan persoalan","Memiliki tanggung jawab personal yang tinggi","Menghindari umpan balik untuk menjaga perasaan"], a:4},
+  {q:"Sebuah studio animasi baru gagal dalam perencanaan bisnisnya, sehingga kesulitan dalam pelaksanaan operasional. Berdasarkan materi, faktor penyebab kegagalan ini termasuk dalam kategori...", o:["Gagal dalam sebuah perencanaan","Ketidakmampuan dalam melakukan transisi kewirausahaan","Kurangnya pengawasan peralatan","Tidak kompeten dalam manajerial","Sikap yang kurang sungguh-sungguh"], a:0},
+  {q:"Rina memiliki ide bisnis jasa foto yang bagus, tetapi ia terus-menerus ragu-ragu dan takut idenya dicuri orang lain, sehingga tidak pernah memulai. Hambatan mental buruk yang dialami Rina adalah...", o:["Pemikiran kemungkinan (probabilitas)","Adanya perasaan ragu-ragu terhadap pemikiran ide-ide positif","Stereotip terhadap kesuksesan","Pemikiran lain yang pesimis","Kecenderungan menghindari risiko"], a:1},
+  {q:"Seorang wirausaha percetakan digital mengalami penurunan omzet karena lokasi usahanya berada di gang sempit yang sulit dijangkau kendaraan pelanggan. Faktor kegagalan yang paling tepat adalah...", o:["Kurang berpengalaman dalam kemampuan teknik","Tidak kompeten dalam manajerial","Lokasi yang kurang memadai","Gagal dalam sebuah perencanaan","Kurang mampu mengendalikan keuangan"], a:2},
+  {q:"Dalam konteks karakteristik wirausaha (10 D's), 'Destiny' berarti...", o:["Seorang wirausaha mempunyai ambisi terhadap masa depan","Seorang wirausaha melaksanakan kegiatannya dengan teguh","Seorang wirausaha bertanggung jawab terhadap nasib dan tujuan yang hendak dicapai","Seorang wirausaha sangat memperhatikan faktor-faktor kritis secara rinci","Seorang wirausaha mencintai pekerjaan bisnisnya"], a:3},
+  {q:"Seorang wirausaha muda berhasil karena ia mampu melihat teman-temannya sebagai alat untuk memenuhi keinginannya dan membantu menyelesaikan pekerjaannya. Perspektif ini merupakan bagian dari...", o:["Menggunakan akal","Menghapus perasaan ragu-ragu","Mengenali lingkungan","Mengembangkan perspektif fungsional","Menerima perbedaan"], a:4},
+  {q:"Seorang wirausaha jasa video shooting selalu menunda pengambilan keputusan karena menunggu kondisi yang 'sempurna', sehingga kehilangan momen pasar. Karakteristik yang kurang ia miliki adalah...", o:["Decisiveness","Determination","Dedication","Devotion","Details"], a:0},
+  {q:"Budi menjalankan usaha sablon kaos. Ia bekerja tanpa mengenal lelah dan semua perhatiannya dipusatkan semata-mata untuk kegiatan bisnisnya. Identifikasi keberhasilan ini adalah...", o:["Dream","Dedication","Destiny","Dollars","Distribute"], a:1},
+  {q:"Sebuah agensi desain grafis gagal karena manajernya tidak mampu mengoordinasikan operasi dan mengelola SDM dengan baik. Faktor kegagalan ini adalah...", o:["Sikap yang kurang sungguh-sungguh","Tidak kompeten dalam manajerial","Kurang berpengalaman baik dalam kemampuan teknik","Kurang mampu dalam mengendalikan keuangan","Ketidakmampuan dalam melakukan transisi kewirausahaan"], a:2},
+  {q:"Seorang wirausaha memiliki ambisi besar terhadap masa depan bisnisnya dan mempunyai kemampuan untuk mewujudkan impiannya tersebut. Identifikasi keberhasilan ini disebut...", o:["Doers","Decisiveness","Determination","Dream","Devotion"], a:3},
+  {q:"Dalam menghadapi pesaing, seorang wirausaha tidak langsung meniru, tetapi mendengarkan keluhan konsumen pesaing untuk menemukan celah perbaikan. Strategi ini merupakan penerapan dari...", o:["Mencari pasar khusus yang belum tergarap","Peka terhadap tren terbaru","Segera mengimplementasi ide","Menghindari kata-kata yang mematahkan semangat","Eksplorasikan kelemahan kompetitor"], a:4},
+  {q:"Mengapa kecerdasan adversitas (AQ) lebih ditekankan dalam pendidikan wiraswasta dibandingkan wirausaha murni?", o:["Karena AQ berperan untuk hidup dan menghadapi tantangan hidup serta kehidupan, membentuk mental baja","Karena AQ hanya berfokus pada perhitungan laba rugi","Karena AQ tidak memerlukan kecerdasan emosional","Karena AQ lebih mengutamakan kemandirian finansial","Karena AQ menjamin keberhasilan bisnis tanpa risiko"], a:0},
+  {q:"Pernyataan yang paling tepat menggambarkan hubungan antara 'Risk and challenge' dan 'Fleksibel' dalam karakteristik wirausaha adalah...", o:["Berani mengambil risiko berarti tidak perlu fleksibel","Berani mengambil risiko membutuhkan sikap fleksibel agar dapat bertahan dan mencari solusi terbaik","Fleksibel berarti menghindari semua bentuk risiko","Risk and challenge hanya berlaku untuk wirausaha besar","Tidak ada hubungan antara keduanya"], a:1},
+  {q:"Seorang wirausaha harus menghindari kebiasaan mental buruk 'Pemikiran Kemungkinan (Probabilitas)' secara berlebihan karena...", o:["Akan membuat wirausaha terlalu cepat dalam mengambil keputusan","Akan membuat wirausaha terlalu kreatif","Akan menghambat seseorang dalam menghadapi kenyataan dan kehilangan kesempatan","Akan membuat wirausaha terlalu bergantung pada stereotip","Akan menghilangkan rasa tanggung jawab personal"], a:2},
+  {q:"Unsur penunjang bekerja efektif dan efisien yang berarti 'tepat dalam membuat rencana, menentukan sasaran, memilih, dan menggunakan metode' adalah...", o:["Kecermatan","Kecepatan","Penghematan","Ketepatan","Keselamatan"], a:3},
+  {q:"Analisis kekuatan, kelemahan, peluang, dan ancaman (SWOT) dalam perencanaan bekerja efektif dan efisien termasuk dalam tahap...", o:["Masa inkubasi","Sasaran jelas, realistis, dan menggairahkan","Implementasi ide","Evaluasi pasca-usaha","Analisis sumber perencanaan"], a:4},
+  {q:"Sifat wirausaha yang 'melihat segala sesuatu dengan cara yang tidak biasa' dan 'menerima serta menyesuaikan yang kelihatannya berlawanan' merupakan ciri dari manusia yang...", o:["Kreatif","Stereotip","Pesimis","Konvensional","Pasif"], a:0},
+  {q:"Jika seorang wirausaha menganggap laba, bonus, dan hadiah pantas didapatkannya apabila berhasil, namun uang bukan motivasi utama melainkan ukuran kesuksesan, ini adalah penjelasan dari karakteristik...", o:["Dream","Dollars","Destiny","Distribute","Details"], a:1},
+  {q:"Tindakan wirausaha yang melaksanakan kegiatannya dengan teguh dan tidak menyerah walaupun menghadapi rintangan, merupakan identifikasi keberhasilan berupa...", o:["Dream","Doers","Determination","Devotion","Dollars"], a:2},
+  {q:"Salah satu cara mengasah persepsi terhadap ketidakpastian dan kemampuan menanggung risiko adalah dengan menyadari bahwa...", o:["Risiko harus dihindari sepenuhnya","Ketidakpastian murni dapat diukur secara matematis","Wirausahawan memiliki tingkat efisiensi lebih rendah","Risiko yang diambil tidak berarti jika dibandingkan dengan keuntungan yang diperoleh","Hanya manajer biasa yang mampu mengambil keputusan"], a:3},
+  {q:"Bekerja efektif dan efisien berarti mencapai hasil sesuai rencana dengan pengorbanan sekecil mungkin. Unsur yang berarti 'dapat menyelesaikan pekerjaan dengan selamat sehingga tidak terjadi risiko yang harus ditanggung dan dibiayai' adalah...", o:["Ketepatan","Kecermatan","Kecepatan","Penghematan","Keselamatan"], a:4}
+];
+
+// ============ VARIABEL GLOBAL ============
+let waktuMulai, durasi = 30 * 60; // 30 menit dalam detik
+let timerInterval;
+let statusUjian = localStorage.getItem('statusUjian');
+let jawaban = JSON.parse(localStorage.getItem('jawaban') || '{}');
+let dataSiswa = JSON.parse(localStorage.getItem('dataSiswa') || 'null');
+
+// ============ BLOKIR COPY & SCREENSHOT ============
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('paste', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'a' || e.key === 'A' || e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) {
+    e.preventDefault();
+  }
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) {
+    e.preventDefault();
+  }
+  if (e.key === 'PrintScreen') {
+    e.preventDefault();
+    alert('Screenshot tidak diizinkan!');
+    navigator.clipboard.writeText('').catch(()=>{});
+  }
+});
+
+function blockKeys(e) {
+  if (e.key === 'F12') return false;
+  return true;
+}
+
+// Deteksi tab switch (anti-cheat sederhana)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && statusUjian === 'berlangsung') {
+    // Bisa ditambahkan log peringatan
+  }
+});
+
+// ============ LOGIKA UJIAN ============
+function mulaiUjian() {
+  const nama = document.getElementById('nama').value.trim();
+  const nomor = document.getElementById('nomor').value.trim();
+  const kelas = document.getElementById('kelas').value.trim();
+
+  if (!nama || !nomor || !kelas) {
+    alert('Mohon lengkapi semua data!');
+    return;
+  }
+
+  dataSiswa = {nama, nomor, kelas};
+  localStorage.setItem('dataSiswa', JSON.stringify(dataSiswa));
+  waktuMulai = Date.now();
+  localStorage.setItem('waktuMulai', waktuMulai);
+  statusUjian = 'berlangsung';
+  localStorage.setItem('statusUjian', statusUjian);
+
+  tampilkanSoal();
+  mulaiTimer();
+}
+
+function tampilkanSoal() {
+  document.getElementById('identityForm').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  document.getElementById('resultArea').style.display = 'none';
+
+  let html = '';
+  soal.forEach((s, i) => {
+    html += `<div class="question"><p>${i+1}. ${s.q}</p>`;
+    s.o.forEach((opt, j) => {
+      const checked = jawaban[i] === j ? 'checked' : '';
+      html += `<label class="option"><input type="radio" name="q${i}" value="${j}" ${checked} onchange="simpanJawaban(${i}, ${j})"> ${String.fromCharCode(65+j)}. ${opt}</label>`;
+    });
+    html += `</div>`;
+  });
+  html += `<button class="btn" id="btnKumpul" onclick="kumpulkan()" disabled>Kumpulkan Jawaban</button>`;
+  document.getElementById('quizArea').innerHTML = html;
+}
+
+function simpanJawaban(idx, val) {
+  jawaban[idx] = val;
+  localStorage.setItem('jawaban', JSON.stringify(jawaban));
+}
+
+function mulaiTimer() {
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - waktuMulai) / 1000);
+    const sisa = durasi - elapsed;
+
+    if (sisa <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('timer').innerText = 'WAKTU HABIS!';
+      document.getElementById('btnKumpul').disabled = false;
+      kumpulkan();
+      return;
+    }
+
+    const menit = Math.floor(sisa / 60);
+    const detik = sisa % 60;
+    document.getElementById('timer').innerText = `Waktu Tersisa: ${String(menit).padStart(2,'0')}:${String(detik).padStart(2,'0')}`;
+
+    // Aktifkan tombol kumpul jika waktu habis
+    if (sisa <= 0) {
+      document.getElementById('btnKumpul').disabled = false;
+    }
+  }, 1000);
+}
+
+function kumpulkan() {
+  const elapsed = Math.floor((Date.now() - waktuMulai) / 1000);
+  if (elapsed < durasi) {
+    alert('Anda belum dapat mengumpulkan soal sebelum waktu habis!');
+    return;
+  }
+
+  clearInterval(timerInterval);
+  let benar = 0;
+  soal.forEach((s, i) => {
+    if (jawaban[i] === s.a) benar++;
+  });
+
+  const nilai = Math.round((benar / soal.length) * 100);
+  statusUjian = 'selesai';
+  localStorage.setItem('statusUjian', statusUjian);
+  localStorage.setItem('nilai', nilai);
+
+  tampilkanHasil(nilai, benar);
+}
+
+function tampilkanHasil(nilai, benar) {
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'block';
+  document.getElementById('timer').style.display = 'none';
+
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result">
+      <h2>✅ Ujian Selesai</h2>
+      <p><strong>Nama:</strong> ${dataSiswa.nama}</p>
+      <p><strong>Nomor:</strong> ${dataSiswa.nomor}</p>
+      <p><strong>Kelas:</strong> ${dataSiswa.kelas}</p>
+      <div class="score">${nilai}</div>
+      <p>Jawaban Benar: <strong>${benar}</strong> dari <strong>${soal.length}</strong> soal</p>
+      <p style="margin-top:20px; color:#666;">Terima kasih telah mengerjakan ujian.</p>
+    </div>
+  `;
+}
+
+// ============ MODAL RESET GURU ============
+function bukaModalReset() {
+  document.getElementById('resetModal').style.display = 'flex';
+}
+function tutupModal() {
+  document.getElementById('resetModal').style.display = 'none';
+}
+function konfirmasiReset() {
+  const pwd = document.getElementById('passwordGuru').value;
+  // Password default: guru123 (silakan ganti sesuai kebutuhan)
+  if (pwd === 'guru123') {
+    localStorage.clear();
+    alert('Ujian berhasil direset!');
+    location.reload();
+  } else {
+    alert('Password salah!');
+  }
+}
+
+// ============ INISIALISASI ============
+window.onload = function() {
+  if (statusUjian === 'berlangsung') {
+    waktuMulai = parseInt(localStorage.getItem('waktuMulai'));
+    tampilkanSoal();
+    mulaiTimer();
+  } else if (statusUjian === 'selesai') {
+    const nilai = localStorage.getItem('nilai');
+    tampilkanHasil(parseInt(nilai), Object.values(jawaban).filter((v,i) => v === soal[i].a).length);
+  }
+};
+</script>
+
+</body>
+</html>
