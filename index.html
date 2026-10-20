@@ -61,7 +61,7 @@
     margin-bottom: 5px;
     color: #333;
   }
-  input[type="text"], input[type="number"] {
+  input[type="text"], input[type="number"], input[type="password"] {
     width: 100%;
     padding: 10px;
     border: 2px solid #ddd;
@@ -90,6 +90,21 @@
   .btn:disabled {
     background: #aaa;
     cursor: not-allowed;
+  }
+  .btn-reset {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    float: right;
+    margin-bottom: 15px;
+  }
+  .btn-reset:hover {
+    background: #c0392b;
   }
   .question {
     background: #f8f9ff;
@@ -155,18 +170,6 @@
     z-index: 1;
     white-space: nowrap;
   }
-  #resetBtn {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: transparent;
-    color: transparent;
-    border: none;
-    font-size: 10px;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-  }
   .modal {
     display: none;
     position: fixed;
@@ -191,6 +194,20 @@
     border: 2px solid #ddd;
     border-radius: 6px;
   }
+  .btn-cancel {
+    background: #aaa;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 </style>
 </head>
 <body oncontextmenu="return false;" onkeydown="return blockKeys(event);">
@@ -204,8 +221,6 @@
   <div class="info-box">
     ⏰ Waktu pengerjaan: <strong>30 menit</strong>. Soal tidak dapat dikumpulkan sebelum waktu habis.
   </div>
-
-  <div class="timer" id="timer">Waktu Tersisa: 30:00</div>
 
   <!-- FORM IDENTITAS -->
   <div id="identityForm">
@@ -225,7 +240,14 @@
   </div>
 
   <!-- AREA SOAL -->
-  <div id="quizArea" style="display:none;"></div>
+  <div id="quizArea" style="display:none;">
+    <div class="clearfix">
+      <button class="btn-reset" onclick="bukaModalReset()">🔐 Reset Ujian</button>
+    </div>
+    <div class="timer" id="timer">Waktu Tersisa: 30:00</div>
+    <div id="soalContainer"></div>
+    <button class="btn" id="btnKumpul" onclick="kumpulkan()" disabled style="width:100%; margin-top:20px;">Kumpulkan Jawaban</button>
+  </div>
 
   <!-- HASIL -->
   <div id="resultArea" style="display:none;"></div>
@@ -235,14 +257,12 @@
 <div class="modal" id="resetModal">
   <div class="modal-content">
     <h3>🔐 Reset Ujian (Guru)</h3>
-    <input type="password" id="passwordGuru" placeholder="Masukkan password guru">
+    <p>Masukkan password guru untuk mereset ujian:</p>
+    <input type="password" id="passwordGuru" placeholder="Password guru">
     <button class="btn" onclick="konfirmasiReset()">Reset</button>
-    <button class="btn" style="background:#aaa;" onclick="tutupModal()">Batal</button>
+    <button class="btn-cancel" onclick="tutupModal()">Batal</button>
   </div>
 </div>
-
-<!-- TOMBOL RESET TERSEMBUNYI -->
-<button id="resetBtn" onclick="bukaModalReset()"></button>
 
 <script>
 // ============ DATA SOAL ============
@@ -329,13 +349,6 @@ function blockKeys(e) {
   return true;
 }
 
-// Deteksi tab switch (anti-cheat sederhana)
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden && statusUjian === 'berlangsung') {
-    // Bisa ditambahkan log peringatan
-  }
-});
-
 // ============ LOGIKA UJIAN ============
 function mulaiUjian() {
   const nama = document.getElementById('nama').value.trim();
@@ -367,13 +380,12 @@ function tampilkanSoal() {
   soal.forEach((s, i) => {
     html += `<div class="question"><p>${i+1}. ${s.q}</p>`;
     s.o.forEach((opt, j) => {
-      const checked = jawaban[i] === j ? 'checked' : '';
+      const checked = jawaban[i] == j ? 'checked' : '';
       html += `<label class="option"><input type="radio" name="q${i}" value="${j}" ${checked} onchange="simpanJawaban(${i}, ${j})"> ${String.fromCharCode(65+j)}. ${opt}</label>`;
     });
     html += `</div>`;
   });
-  html += `<button class="btn" id="btnKumpul" onclick="kumpulkan()" disabled>Kumpulkan Jawaban</button>`;
-  document.getElementById('quizArea').innerHTML = html;
+  document.getElementById('soalContainer').innerHTML = html;
 }
 
 function simpanJawaban(idx, val) {
@@ -389,19 +401,14 @@ function mulaiTimer() {
     if (sisa <= 0) {
       clearInterval(timerInterval);
       document.getElementById('timer').innerText = 'WAKTU HABIS!';
+      document.getElementById('timer').style.background = '#27ae60';
       document.getElementById('btnKumpul').disabled = false;
-      kumpulkan();
       return;
     }
 
     const menit = Math.floor(sisa / 60);
     const detik = sisa % 60;
     document.getElementById('timer').innerText = `Waktu Tersisa: ${String(menit).padStart(2,'0')}:${String(detik).padStart(2,'0')}`;
-
-    // Aktifkan tombol kumpul jika waktu habis
-    if (sisa <= 0) {
-      document.getElementById('btnKumpul').disabled = false;
-    }
   }, 1000);
 }
 
@@ -415,7 +422,7 @@ function kumpulkan() {
   clearInterval(timerInterval);
   let benar = 0;
   soal.forEach((s, i) => {
-    if (jawaban[i] === s.a) benar++;
+    if (jawaban[i] == s.a) benar++;
   });
 
   const nilai = Math.round((benar / soal.length) * 100);
@@ -429,7 +436,6 @@ function kumpulkan() {
 function tampilkanHasil(nilai, benar) {
   document.getElementById('quizArea').style.display = 'none';
   document.getElementById('resultArea').style.display = 'block';
-  document.getElementById('timer').style.display = 'none';
 
   document.getElementById('resultArea').innerHTML = `
     <div class="result">
@@ -447,6 +453,7 @@ function tampilkanHasil(nilai, benar) {
 // ============ MODAL RESET GURU ============
 function bukaModalReset() {
   document.getElementById('resetModal').style.display = 'flex';
+  document.getElementById('passwordGuru').value = '';
 }
 function tutupModal() {
   document.getElementById('resetModal').style.display = 'none';
@@ -455,11 +462,13 @@ function konfirmasiReset() {
   const pwd = document.getElementById('passwordGuru').value;
   // Password default: guru123 (silakan ganti sesuai kebutuhan)
   if (pwd === 'guru123') {
-    localStorage.clear();
-    alert('Ujian berhasil direset!');
-    location.reload();
+    if (confirm('Yakin ingin mereset ujian? Semua data siswa akan dihapus.')) {
+      localStorage.clear();
+      alert('Ujian berhasil direset!');
+      location.reload();
+    }
   } else {
-    alert('Password salah!');
+    alert('Password salah! Hanya guru yang dapat mereset ujian.');
   }
 }
 
@@ -469,12 +478,23 @@ window.onload = function() {
     waktuMulai = parseInt(localStorage.getItem('waktuMulai'));
     tampilkanSoal();
     mulaiTimer();
+    // Cek apakah waktu sudah habis saat reload
+    const elapsed = Math.floor((Date.now() - waktuMulai) / 1000);
+    if (elapsed >= durasi) {
+      document.getElementById('timer').innerText = 'WAKTU HABIS!';
+      document.getElementById('timer').style.background = '#27ae60';
+      document.getElementById('btnKumpul').disabled = false;
+    }
   } else if (statusUjian === 'selesai') {
     const nilai = localStorage.getItem('nilai');
-    tampilkanHasil(parseInt(nilai), Object.values(jawaban).filter((v,i) => v === soal[i].a).length);
+    let benar = 0;
+    soal.forEach((s, i) => {
+      if (jawaban[i] == s.a) benar++;
+    });
+    tampilkanHasil(parseInt(nilai), benar);
   }
 };
 </script>
 
 </body>
-</html>
+ </html>
