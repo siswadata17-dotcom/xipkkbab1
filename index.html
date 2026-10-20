@@ -26,6 +26,8 @@
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 10;
   }
   h1 {
     text-align: center;
@@ -51,6 +53,25 @@
     margin-bottom: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     z-index: 100;
+  }
+  .violation-bar {
+    background: #fff3cd;
+    border-left: 4px solid #ff9800;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    color: #856404;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+  .violation-count {
+    background: #dc3545;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
   }
   .form-group {
     margin-bottom: 15px;
@@ -140,15 +161,25 @@
     border-radius: 10px;
     border: 2px solid #4caf50;
   }
+  .result.violation-result {
+    background: #ffebee;
+    border-color: #c62828;
+  }
   .result h2 {
     color: #2e7d32;
     margin-top: 0;
+  }
+  .result.violation-result h2 {
+    color: #c62828;
   }
   .score {
     font-size: 48px;
     font-weight: bold;
     color: #2e7d32;
     margin: 15px 0;
+  }
+  .result.violation-result .score {
+    color: #c62828;
   }
   .info-box {
     background: #fff3cd;
@@ -157,6 +188,14 @@
     border-radius: 6px;
     margin-bottom: 20px;
     color: #856404;
+  }
+  .warning-box {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #721c24;
   }
   .watermark {
     position: fixed;
@@ -208,11 +247,88 @@
     display: table;
     clear: both;
   }
+  /* OVERLAY PELANGGARAN */
+  #violationOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(220, 53, 69, 0.95);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+    animation: flashRed 0.5s;
+  }
+  #violationOverlay h1 {
+    color: white;
+    font-size: 60px;
+    margin: 0;
+    animation: pulse 1s infinite;
+  }
+  #violationOverlay p {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+  #violationOverlay .counter {
+    font-size: 100px;
+    font-weight: bold;
+    margin: 20px 0;
+    background: white;
+    color: #dc3545;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @keyframes flashRed {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .violation-list {
+    text-align: left;
+    background: #fff;
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    max-width: 500px;
+    width: 90%;
+  }
+  .violation-list h3 {
+    color: #c62828;
+    margin-top: 0;
+  }
+  .violation-list ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+  .violation-list li {
+    margin: 5px 0;
+    font-size: 14px;
+  }
 </style>
 </head>
-<body oncontextmenu="return false;" onkeydown="return blockKeys(event);">
+<body oncontextmenu="return false;">
 
 <div class="watermark">UJIAN - DILARANG SCREENSHOT</div>
+
+<!-- OVERLAY PELANGGARAN -->
+<div id="violationOverlay">
+  <h1>⚠️ PELANGGARAN TERDETEKSI!</h1>
+  <div class="counter" id="overlayCounter">1</div>
+  <p id="overlayMessage">Aktivitas screenshot/tab switch terdeteksi!</p>
+  <p style="font-size:18px; margin-top:20px;">Pelanggaran: <span id="overlayCount">1</span> / 5</p>
+  <p style="font-size:16px; opacity:0.9;">Jika mencapai 5 pelanggaran, ujian akan otomatis dikumpulkan.</p>
+</div>
 
 <div class="container">
   <h1>📝 Evaluasi PKK DKV BAB 1</h1>
@@ -220,6 +336,10 @@
 
   <div class="info-box">
     ⏰ Waktu pengerjaan: <strong>30 menit</strong>. Soal tidak dapat dikumpulkan sebelum waktu habis.
+  </div>
+
+  <div class="warning-box">
+    🚨 <strong>PERINGATAN:</strong> Dilarang melakukan screenshot, pindah tab, atau keluar dari layar. Setiap pelanggaran akan dicatat. <strong>5 pelanggaran = ujian otomatis dikumpulkan.</strong>
   </div>
 
   <!-- FORM IDENTITAS -->
@@ -245,6 +365,10 @@
       <button class="btn-reset" onclick="bukaModalReset()">🔐 Reset Ujian</button>
     </div>
     <div class="timer" id="timer">Waktu Tersisa: 30:00</div>
+    <div class="violation-bar">
+      <span>⚠️ Jumlah Pelanggaran:</span>
+      <span class="violation-count" id="violationCountDisplay">0 / 5</span>
+    </div>
     <div id="soalContainer"></div>
     <button class="btn" id="btnKumpul" onclick="kumpulkan()" disabled style="width:100%; margin-top:20px;">Kumpulkan Jawaban</button>
   </div>
@@ -320,33 +444,126 @@ const soal = [
 ];
 
 // ============ VARIABEL GLOBAL ============
-let waktuMulai, durasi = 30 * 60; // 30 menit dalam detik
+let waktuMulai, durasi = 30 * 60;
 let timerInterval;
 let statusUjian = localStorage.getItem('statusUjian');
 let jawaban = JSON.parse(localStorage.getItem('jawaban') || '{}');
 let dataSiswa = JSON.parse(localStorage.getItem('dataSiswa') || 'null');
+let pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
+let jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
+const MAX_PELANGGARAN = 5;
 
-// ============ BLOKIR COPY & SCREENSHOT ============
-document.addEventListener('copy', e => e.preventDefault());
-document.addEventListener('cut', e => e.preventDefault());
-document.addEventListener('paste', e => e.preventDefault());
+// ============ BLOKIR COPY & KEYBOARD SHORTCUTS ============
+document.addEventListener('copy', e => { e.preventDefault(); catatPelanggaran('Percobaan copy teks'); });
+document.addEventListener('cut', e => { e.preventDefault(); catatPelanggaran('Percobaan cut teks'); });
+document.addEventListener('paste', e => { e.preventDefault(); });
 document.addEventListener('keydown', e => {
-  if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'a' || e.key === 'A' || e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) {
+  // Blokir Ctrl+C, Ctrl+X, Ctrl+A, Ctrl+P, Ctrl+S, Ctrl+U
+  if (e.ctrlKey && (['c','C','x','X','a','A','p','P','s','S','u','U'].includes(e.key))) {
     e.preventDefault();
+    catatPelanggaran('Pencetakan tombol Ctrl+' + e.key.toUpperCase());
+    return false;
   }
-  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) {
+  // Blokir F12
+  if (e.key === 'F12') {
     e.preventDefault();
+    catatPelanggaran('Pencetakan tombol F12');
+    return false;
   }
-  if (e.key === 'PrintScreen') {
+  // Blokir Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
+  if (e.ctrlKey && e.shiftKey && (['I','i','J','j','C','c'].includes(e.key))) {
     e.preventDefault();
-    alert('Screenshot tidak diizinkan!');
+    catatPelanggaran('Pencetakan tombol DevTools');
+    return false;
+  }
+  // Blokir PrintScreen
+  if (e.key === 'PrintScreen' || e.key === 'Print') {
+    e.preventDefault();
+    catatPelanggaran('Pencetakan tombol PrintScreen');
+    tampilkanOverlayPelanggaran('Tombol PrintScreen terdeteksi!');
+    // Bersihkan clipboard
     navigator.clipboard.writeText('').catch(()=>{});
+    return false;
+  }
+  // Deteksi Windows+Shift+S (Snipping Tool)
+  if ((e.metaKey || e.key === 'Meta') && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+    e.preventDefault();
+    catatPelanggaran('Pencetakan tombol Windows+Shift+S (Snipping Tool)');
+    tampilkanOverlayPelanggaran('Snipping Tool terdeteksi!');
+    return false;
+  }
+  // Deteksi Cmd+Shift+3/4 (Mac screenshot)
+  if (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4')) {
+    e.preventDefault();
+    catatPelanggaran('Pencetakan tombol screenshot Mac');
+    tampilkanOverlayPelanggaran('Screenshot Mac terdeteksi!');
+    return false;
   }
 });
 
-function blockKeys(e) {
-  if (e.key === 'F12') return false;
-  return true;
+// ============ DETEKSI BLUR (WINDOW KEHILANGAN FOKUS) ============
+window.addEventListener('blur', () => {
+  if (statusUjian === 'berlangsung') {
+    catatPelanggaran('Window kehilangan fokus (blur)');
+    tampilkanOverlayPelanggaran('Window kehilangan fokus terdeteksi!');
+  }
+});
+
+// ============ DETEKSI VISIBILITY CHANGE (TAB SWITCH) ============
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && statusUjian === 'berlangsung') {
+    catatPelanggaran('Pindah tab / minimize window');
+    tampilkanOverlayPelanggaran('Pindah tab atau minimize terdeteksi!');
+  }
+});
+
+// ============ FUNGSI PELANGGARAN ============
+function catatPelanggaran(jenis) {
+  if (statusUjian !== 'berlangsung') return;
+  
+  jumlahPelanggaran++;
+  const waktu = new Date().toLocaleTimeString('id-ID');
+  pelanggaran.push({
+    no: jumlahPelanggaran,
+    jenis: jenis,
+    waktu: waktu
+  });
+  
+  localStorage.setItem('jumlahPelanggaran', jumlahPelanggaran);
+  localStorage.setItem('pelanggaran', JSON.stringify(pelanggaran));
+  
+  updateTampilanPelanggaran();
+  
+  // Auto-submit jika mencapai batas
+  if (jumlahPelanggaran >= MAX_PELANGGARAN) {
+    setTimeout(() => {
+      alert('⚠️ Anda telah mencapai 5 pelanggaran! Ujian akan otomatis dikumpulkan.');
+      autoSubmit();
+    }, 3000);
+  }
+}
+
+function updateTampilanPelanggaran() {
+  const display = document.getElementById('violationCountDisplay');
+  if (display) {
+    display.innerText = `${jumlahPelanggaran} / ${MAX_PELANGGARAN}`;
+    if (jumlahPelanggaran >= 3) {
+      display.style.background = '#c62828';
+    }
+  }
+}
+
+function tampilkanOverlayPelanggaran(pesan) {
+  const overlay = document.getElementById('violationOverlay');
+  document.getElementById('overlayCounter').innerText = jumlahPelanggaran;
+  document.getElementById('overlayCount').innerText = jumlahPelanggaran;
+  document.getElementById('overlayMessage').innerText = pesan;
+  overlay.style.display = 'flex';
+  
+  // Sembunyikan overlay setelah 3 detik
+  setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 3000);
 }
 
 // ============ LOGIKA UJIAN ============
@@ -366,6 +583,10 @@ function mulaiUjian() {
   localStorage.setItem('waktuMulai', waktuMulai);
   statusUjian = 'berlangsung';
   localStorage.setItem('statusUjian', statusUjian);
+  jumlahPelanggaran = 0;
+  pelanggaran = [];
+  localStorage.setItem('jumlahPelanggaran', 0);
+  localStorage.setItem('pelanggaran', JSON.stringify(pelanggaran));
 
   tampilkanSoal();
   mulaiTimer();
@@ -386,6 +607,7 @@ function tampilkanSoal() {
     html += `</div>`;
   });
   document.getElementById('soalContainer').innerHTML = html;
+  updateTampilanPelanggaran();
 }
 
 function simpanJawaban(idx, val) {
@@ -418,7 +640,14 @@ function kumpulkan() {
     alert('Anda belum dapat mengumpulkan soal sebelum waktu habis!');
     return;
   }
+  submitUjian(false);
+}
 
+function autoSubmit() {
+  submitUjian(true);
+}
+
+function submitUjian(isAutoSubmit) {
   clearInterval(timerInterval);
   let benar = 0;
   soal.forEach((s, i) => {
@@ -429,22 +658,45 @@ function kumpulkan() {
   statusUjian = 'selesai';
   localStorage.setItem('statusUjian', statusUjian);
   localStorage.setItem('nilai', nilai);
+  localStorage.setItem('benar', benar);
+  localStorage.setItem('autoSubmit', isAutoSubmit);
 
-  tampilkanHasil(nilai, benar);
+  tampilkanHasil(nilai, benar, isAutoSubmit);
 }
 
-function tampilkanHasil(nilai, benar) {
+function tampilkanHasil(nilai, benar, isAutoSubmit) {
   document.getElementById('quizArea').style.display = 'none';
   document.getElementById('resultArea').style.display = 'block';
 
+  const isViolation = jumlahPelanggaran > 0 || isAutoSubmit;
+  const resultClass = isViolation ? 'result violation-result' : 'result';
+  const titleText = isAutoSubmit ? '🚨 UJIAN DIKUMPULKAN PAKSA' : '✅ Ujian Selesai';
+  
+  let violationListHtml = '';
+  if (pelanggaran.length > 0) {
+    violationListHtml = `
+      <div style="text-align:left; background:#fff; padding:15px; border-radius:8px; margin-top:20px; border:2px solid #dc3545;">
+        <h3 style="color:#c62828; margin-top:0;">📋 Riwayat Pelanggaran:</h3>
+        <ul style="padding-left:20px; margin:0;">
+          ${pelanggaran.map(p => `<li><strong>Ke-${p.no}</strong> (${p.waktu}): ${p.jenis}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
   document.getElementById('resultArea').innerHTML = `
-    <div class="result">
-      <h2>✅ Ujian Selesai</h2>
+    <div class="${resultClass}">
+      <h2>${titleText}</h2>
       <p><strong>Nama:</strong> ${dataSiswa.nama}</p>
       <p><strong>Nomor:</strong> ${dataSiswa.nomor}</p>
       <p><strong>Kelas:</strong> ${dataSiswa.kelas}</p>
       <div class="score">${nilai}</div>
       <p>Jawaban Benar: <strong>${benar}</strong> dari <strong>${soal.length}</strong> soal</p>
+      <p style="margin-top:15px; font-size:18px;">
+        <strong>⚠️ Jumlah Pelanggaran: <span style="color:#c62828; font-size:24px;">${jumlahPelanggaran}</span></strong>
+      </p>
+      ${isAutoSubmit ? '<p style="color:#c62828; font-weight:bold; margin-top:10px;">Ujian dikumpulkan otomatis karena mencapai batas pelanggaran!</p>' : ''}
+      ${violationListHtml}
       <p style="margin-top:20px; color:#666;">Terima kasih telah mengerjakan ujian.</p>
     </div>
   `;
@@ -460,7 +712,7 @@ function tutupModal() {
 }
 function konfirmasiReset() {
   const pwd = document.getElementById('passwordGuru').value;
-  // Password default: guru123 (silakan ganti sesuai kebutuhan)
+  // Password default: guru123
   if (pwd === 'guru123') {
     if (confirm('Yakin ingin mereset ujian? Semua data siswa akan dihapus.')) {
       localStorage.clear();
@@ -476,9 +728,10 @@ function konfirmasiReset() {
 window.onload = function() {
   if (statusUjian === 'berlangsung') {
     waktuMulai = parseInt(localStorage.getItem('waktuMulai'));
+    jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
+    pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
     tampilkanSoal();
     mulaiTimer();
-    // Cek apakah waktu sudah habis saat reload
     const elapsed = Math.floor((Date.now() - waktuMulai) / 1000);
     if (elapsed >= durasi) {
       document.getElementById('timer').innerText = 'WAKTU HABIS!';
@@ -487,11 +740,11 @@ window.onload = function() {
     }
   } else if (statusUjian === 'selesai') {
     const nilai = localStorage.getItem('nilai');
-    let benar = 0;
-    soal.forEach((s, i) => {
-      if (jawaban[i] == s.a) benar++;
-    });
-    tampilkanHasil(parseInt(nilai), benar);
+    const benar = parseInt(localStorage.getItem('benar') || 0);
+    const isAutoSubmit = localStorage.getItem('autoSubmit') === 'true';
+    jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
+    pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
+    tampilkanHasil(parseInt(nilai), benar, isAutoSubmit);
   }
 };
 </script>
