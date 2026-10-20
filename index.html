@@ -127,6 +127,20 @@
   .btn-reset:hover {
     background: #c0392b;
   }
+  .btn-reset-result {
+    background: #e74c3c;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  .btn-reset-result:hover {
+    background: #c0392b;
+  }
   .question {
     background: #f8f9ff;
     border-left: 4px solid #667eea;
@@ -373,7 +387,7 @@
 </div>
 
 <script>
-// ============ DATA SOAL ============
+// ============ DATA SOAL (50 SOAL) ============
 const soal = [
   {q:"Seorang wirausahawan komputer dan informatika didefinisikan sebagai seseorang yang memiliki usaha sendiri dalam bidang barang atau jasa, khususnya di dunia...", o:["Multimedia","Pertanian","Pertambangan","Perbankan","Kesehatan"], a:0},
   {q:"Faktor yang memengaruhi semangat kerja seorang wirausahawan, di mana terbukanya sebuah kesempatan dapat meningkatkan kinerjanya, disebut...", o:["Minat","Peluang","Relasi","Modal","Ambisi"], a:1},
@@ -671,6 +685,7 @@ function tampilkanHasil(nilai, benar, isAutoSubmit) {
         🔒 <strong>Ujian telah selesai dan dikunci.</strong><br>
         Anda tidak dapat mengerjakan ulang ujian ini. Jika ada kesalahan teknis, silakan hubungi guru untuk melakukan reset.
       </div>
+      <button class="btn-reset-result" onclick="bukaModalReset()">🔐 Reset Ujian (Guru)</button>
       <p style="margin-top:20px; color:#666;">Terima kasih telah mengerjakan ujian.</p>
     </div>
   `;
@@ -713,20 +728,18 @@ window.onload = function() {
       document.getElementById('btnKumpul').disabled = false;
     }
   } else if (statusUjian === 'selesai') {
-    // PENTING: Saat status = selesai, langsung tampilkan hasil
-    // TIDAK ada opsi untuk mengerjakan ulang
     const nilai = localStorage.getItem('nilai');
     const benar = parseInt(localStorage.getItem('benar') || 0);
     const isAutoSubmit = localStorage.getItem('autoSubmit') === 'true';
     jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
     pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
     
-    // Jika data siswa hilang (misal dihapus manual), tampilkan pesan
     if (!dataSiswa) {
       document.getElementById('resultArea').innerHTML = `
         <div class="result violation-result">
           <h2>⚠️ Data Tidak Ditemukan</h2>
           <p>Data ujian tidak lengkap. Silakan hubungi guru untuk melakukan reset.</p>
+          <button class="btn-reset-result" onclick="bukaModalReset()">🔐 Reset Ujian (Guru)</button>
         </div>
       `;
       return;
@@ -734,7 +747,6 @@ window.onload = function() {
     
     tampilkanHasil(parseInt(nilai), benar, isAutoSubmit);
   }
-  // Jika statusUjian null (belum mulai), tampilkan form identitas (default)
 };
 </script>
 
